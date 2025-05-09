@@ -1,1 +1,157 @@
-"Hello World" 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreeJS Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js",
+                "three/examples/jsm/loaders/FBXLoader": "https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/loaders/FBXLoader.js",
+                "three/examples/jsm/loaders/GLTFLoader": "https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/loaders/GLTFLoader.js",
+                "lil-gui": "https://cdn.jsdelivr.net/npm/lil-gui@0.16.1/dist/lil-gui.esm.js"
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <script id="vertexShader" type="vertex">
+        uniform float u_time;
+        uniform vec2 u_mousePos;
+        varying vec3 vNormal;
+        varying float vDisplacement;
+
+        void main(){
+            vNormal = normal;
+            float distanceFromMouse = length(u_mousePos - uv);
+            float displacement = sin(u_time * 2.0 + distanceFromMouse * 20.0 + position.y * 4.0) * 0.3;
+            vDisplacement = displacement;
+            vec3 newPosition = position + normal * displacement;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
+        }
+    </script>
+    <script id="fragmentShader" type="fragment">
+        uniform float u_time;
+        varying vec3 vNormal;
+        varying float vDisplacement;
+
+        void main() {
+            vec3 color = vec3(0.3 + 0.3 * sin(u_time + vDisplacement * 5.0),
+                      0.5 + 0.3 * cos(u_time + vDisplacement * 2.0),
+                      0.8 + 0.2 * sin(u_time));
+            float lighting = dot(normalize(vNormal), vec3(0.0, 0.0, 1.0));
+            color *= lighting;
+            gl_FragColor = vec4(color, 1.0);
+        }
+    </script>
+    <canvas id="bg"></canvas>
+    <main>
+        <header>
+            <nav class="navbar">
+                <ul>
+                  <li><a href="#about">About</a></li>
+                  <li class="dropdown">
+                    <a href="#projects">Projects</a>
+                    <ul class="dropdown-content">
+                      <li><a href="#3d">3D</a></li>
+                      <li><a href="#java">Java</a></li>
+                      <li><a href="#threejs">Three.js</a></li>
+                      <li><a href="#glsl2">GLSL</a></li>
+                      <li><a href="#unity">Unity</a></li>
+                    </ul>
+                  </li>
+                  <li><a href="#skills">Skills</a></li>
+                  <li><a href="#conclusion">Conclusion</a></li>
+                </ul>
+              </nav>
+            <h1>Maxim Medlyarskiy</h1>
+            <p>IT Student</p>
+        </header>
+
+        <section>
+            <h2 id="about">About</h2>
+            <p>I am a passionate student who loves to work on various projects and learn new things. My passion for programming, combined with skills developed through general interest and hands-on experience in game programming with Unity, has sharpened my problem-solving abilities and deepened my programming skills.</p>
+            <p>I am currently studying International Media and Computing, which revolves around the standard IT-topics, but with more of a focus in image processing, computer graphics, web development and game development.</p>
+            <p>I am currently in my fifth semester and expect to complete my bachelor's degree in September 2026.</p>
+        </section>
+
+        <section class="light">
+            <h2 id="projects">Projects</h2>
+            <h3 id="3d">3D</h3>
+            <p>In my degree program, we learn various aspects of media technology, including 3D design with Maya. This course covers both the technical and creative aspects of 3D modeling and animation.</p>
+            <p>In addition to theoretical knowledge, we apply our skills in practical projects. For example, here is a 3D model I created as part of my degree program (you can drag your mouse inside the canvas to move the model!):</p>
+            <canvas id="model"></canvas>
+            <p>This is a simple model I created at the beginning of the course when I was just getting started with Maya. Over time, I learned more about modeling techniques and topology, and as a final result, I created a detailed typewriter model, which I originally intended to display here interactively (but due to rendering issues with the Arnold materials and export limitations, I had to fall back to static images instead).</p>
+            <div class="slideshow-container">
+                <button class="prev">&#10094;</button>
+                <img class="slide" src="./assets/images/Typewriter6.png" alt="Typewriter picture 1">
+                <img class="slide" src="./assets/images/Typewriter7.png" alt="Typewriter picture 2">
+                <img class="slide" src="./assets/images/Typewriter8.png" alt="Typewriter picture 3">
+                <img class="slide" src="./assets/images/Typewriter9.png" alt="Typewriter picture 4">
+                <img class="slide" src="./assets/images/Typewriter10.png" alt="Typewriter picture 5">
+                <button class="next">&#10095;</button>
+            </div>
+            <h3 id="java">Java</h3>
+            <p>I'm currently working on a Java project titled "Project: Game-Stew" with two other group members. The goal of this project is to develop a web application that recommends board games to users based on other selected board games, game mechanics and genres that are inside the "stew".</p>
+            <p>Below you can see an illustration of the project:</p>
+            <video src="./assets/videos/GameStewConcept.mp4" controls muted>Your browser does not support the video tag.</video>
+            <p>To ensure that nothing accidentally goes wrong, we frequently use GitLab for version control. Additionally, we use PostgreSQL to store all the different board games from the BoardGameGeek API.</p>
+            <h3 id="threejs">Three.js</h3>
+            <p>This "portfolio" is also a project of mine where I'm using Three.js for the first time. Above, I've already showcased the capabilities of Three.js by adding a 3D model to a canvas and making it rotatable with OrbitControls.</p>
+            <p>Below, you can see another example of what is possible with Three.js:</p>
+            <p>Give it a spin!</p>
+            <canvas id="sphere"></canvas>
+            <p>You can also drag outside the canvas for more colors (which is totally not a bug)!</p>
+            <h3 id="glsl2">GLSL</h3>
+            <p>In my computer graphics course, I also learned WebGL, including GLSL (OpenGL Shading Language). In this context, I tried to write my own shader:</p>
+            <canvas id="glsl"></canvas>
+            <div id="glsl-gui-container"></div>
+            <p>This shader creates a dynamic, pulsating "sphere" that responds to time and mouse position. The vertex shader deforms the surface to produce an organic, wave-like motion, while the fragment shader adds a vivid color gradient that shifts over time (it looks even cooler if you turn off wireframe!).</p>
+            <h3 id="unity">Unity</h3>
+            <h4>VR</h4>
+            <p>In addition to my studies, I have also worked on several projects using Unity. One of my most significant projects was a VR-game called "C.H.E.F.", which I developed as part of a team project for the Meta Quest 3. In this game, the player must collect ingredients from alien planets in an endless-runner-style gameplay loop and experiment with them to cook unique recipes.</p>
+            <p>Here is a short gameplay trailer:</p>
+            <video src="./assets/videos/CHEF_Gamplay_Trailer_cutted.mp4" controls>Your browser does not support the video tag.</video>
+            <p>We competed against multiple other bachelor projects and came in second! I led the team, organized our meetings, and took charge of the core game logic as lead programmer.</p>
+            <h4>3D</h4>
+            <p>This was my very first Unity project — a simple "Subway Surfers" style game where the player has to dodge obstacles and survive as long as possible. Through this, I learned the basics of Unity, including object movement, collision detection, simple game logic, and maybe not so basic, procedural generation.</p>
+            <img src="./assets/images/EFC_GameplayPicture.png" alt="Gameplay Screenshot">
+            <p> If you'd like to try it out, you can do so <a href="https://games-presenter-bob.itch.io/escape-china">here</a>! (Please don't take it seriously, it's purely satire)</p>
+            <h4>2D</h4>
+            <p>I'm currently working on a 2D game inspired by The Binding of Isaac. It's still in active development, and I'm using it to learn new skills that can't be gained through 3D game development, such as 2D collision handling, 2D sprite creation and enemy behavior scripting tailored specifically for top-down 2D environment.</p>
+            <img class="isaac" src="./assets/images/isaac1.png" alt="Game Screenshot 1">
+            <img class="isaac" src="./assets/images/isaac2.png" alt="Game Screenshot 2">
+            <p>So far, I've implemented basic movement, dungeon generation, animations, and enemy states. Moving forward, I plan to add items, as well as more variety of enemies and bosses!</p>
+        </section>
+
+        <section class="left">
+            <h2 id="skills">Skills</h2>
+            <ul>
+                <li>Programming Languages: Java, HTML/CSS/JavaScript, C#</li>
+                <li>Tools & Technologies: Three.js, Maya, GitLab/Github, PostgreSQL/SQL, Unity</li>
+                <li>Soft Skills: Problem-solving, teamwork, continuous learning</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 id="conclusion">Conclusion</h2>
+            <p>I am excited about the endless possibilities in the field of interactive media and game development. As I continue my studies and personal projects, I look forward to creating engaging experiences, contributing to innovative ideas and advancing my skills further. Thank you for reviewing my portfolio!</p>
+        </section>
+    
+        <footer>
+            <p>© 2025 Maxim Medlyarskiy</p>
+            <p>Contact: <a href="mailto: medlyarskiymaxim@hotmail.com">medlyarskiymaxim@hotmail.com</a></p>
+        </footer>
+        
+    </main>
+    <script type="module" src="/js/main.js"></script>
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.5.4/dist/es-module-shims.js"></script>
+</body>
+
+
+</html>
