@@ -1,20 +1,6 @@
 import * as THREE from "./three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/controls/OrbitControls.js";
 import { GUI } from "lil-gui";
-import('three/examples/jsm/loaders/FBXLoader')
-  .then((module) => {
-    const FBXLoader = module.FBXLoader;
-
-    const loader = new FBXLoader();
-    loader.load('../assets/models/room.fbx', (FBX) => {
-      modelScene.add(FBX);
-    }, undefined, (error) => {
-      console.error('FBX loading error:', error);
-    });
-  })
-  .catch((error) => {
-    console.error('Failed to import FBXLoader:', error);
-  });
 
 // Main Scene and Renderer ----------------------------------------------------------------------------------------------------------------------
 const scene = new THREE.Scene();
@@ -27,21 +13,8 @@ renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 camera.position.setZ(60);
 
-const backgroundCanvas = new THREE.TextureLoader().load("../assets/images/beach.jpg");
+const backgroundCanvas = new THREE.TextureLoader().load("./assets/images/beach.jpg");
 scene.background = backgroundCanvas;
-//---------------------------------------------------------------------------------------------------------------------------------------------------
-
-// Model Scene and Renderer
-const modelScene = new THREE.Scene();
-const modelCamera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
-modelCamera.position.set(-23, 15, 20);
-
-const modelRenderer = new THREE.WebGLRenderer({
-    canvas: document.querySelector("#model"),
-});
-modelRenderer.setPixelRatio(window.devicePixelRatio);
-modelRenderer.setSize(window.innerWidth, window.innerHeight);
-
 //----------------------------------------------------------------------------------------------------------------------------------------------
 //Sphere Scene and Renderer
 const sphereScene = new THREE.Scene();
@@ -66,18 +39,6 @@ glslRenderer.setPixelRatio(window.devicePixelRatio);
 glslRenderer.setSize(window.innerWidth, window.innerHeight);
 glslCamera.position.setZ(12);
 //--------------------------------------------------------------------------------------------------------------------------------------------------
-
-const modelControls = new OrbitControls(modelCamera, modelRenderer.domElement);
-
-const modelLighting = new THREE.PointLight(0xffffff, 400);
-modelScene.add(modelLighting);
-//changing position of the PointLight
-modelLighting.position.x = 0;
-modelLighting.position.y = 10;
-modelLighting.position.z = 0;
-
-modelScene.background = new THREE.Color(0x8fbcd4); // Applying background to modelScene
-
 
 const glslControls = new OrbitControls(glslCamera, glslRenderer.domElement);
 
@@ -109,19 +70,6 @@ console.log(glslMesh);
 //gui.add(glslMesh.geometry.parameters, "heightSegments", 1, 30, 1).name("Height Segments");
 //gui.add(glslMesh.geometry.parameters, "widthSegments", 1, 30, 1).name("Width Segments");
 
-const taTexture = new THREE.TextureLoader().load("../assets/images/ta.png");
-const ta = new THREE.Mesh(new THREE.SphereGeometry(6, 32, 32), new THREE.MeshBasicMaterial({ map: taTexture }));
-ta.position.x = 75;
-ta.position.y = 30;
-scene.add(ta);
-
-const huhDogTexture = new THREE.TextureLoader().load("../assets/images/huh-dog.gif");
-const huhDog = new THREE.Mesh(new THREE.BoxGeometry(4, 4, 4), new THREE.MeshBasicMaterial({ map: huhDogTexture }));
-huhDog.position.x = 13;
-huhDog.position.y = -8;
-huhDog.position.z = 40;
-scene.add(huhDog);
-
 const sphere = new THREE.Mesh(new THREE.SphereGeometry(3, 64, 64), new THREE.MeshStandardMaterial({color: "#ffffff"}));
 const sphereLight = new THREE.PointLight(0xffffff, 220, 100);
 sphereLight.position.set(0, 10, 10);
@@ -136,26 +84,15 @@ sphereControls.enablePan = false;
 sphereControls.enableZoom = false;
 sphereControls.autoRotate = false; //Standard
 
-function moveCamera() {
-    huhDog.rotation.y += 0.025;
-    huhDog.rotation.x += 0.005;
-}
-document.body.onscroll = moveCamera;
-
 window.addEventListener('resize', () => {
     // Main scene resize
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 
-    modelCamera.aspect = window.innerWidth / window.innerHeight;
-    modelCamera.updateProjectionMatrix();
-    modelRenderer.setSize(window.innerWidth, window.innerHeight);
-
     sphereCamera.aspect = 1000 / 600;
     sphereCamera.updateProjectionMatrix();
     sphereRenderer.setSize(window.innerWidth, window.innerHeight);
-
 });
 
 let mouseDown = false;
@@ -233,15 +170,10 @@ function animate() {
     requestAnimationFrame(animate);
     uniforms.u_time.value = clock.getElapsedTime();
 
-    modelControls.update();
     sphereControls.update();
     glslControls.update();
 
-    ta.rotation.y += 0.005;
-    ta.rotation.z += 0.005;
-
     renderer.render(scene, camera);
-    modelRenderer.render(modelScene, modelCamera);
     sphereRenderer.render(sphereScene, sphereCamera);
     glslRenderer.render(glslScene, glslCamera);
 
