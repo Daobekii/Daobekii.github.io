@@ -66,7 +66,7 @@ const scaleFolder = gui.addFolder("Scaling");
 scaleFolder.open();
 scaleFolder.add(glslMesh.scale, "x", 0, 2).name("Width");
 scaleFolder.add(glslMesh.scale, "y", 0, 2).name("Height");
-console.log(glslMesh);
+// console.log(glslMesh);
 //gui.add(glslMesh.geometry.parameters, "heightSegments", 1, 30, 1).name("Height Segments");
 //gui.add(glslMesh.geometry.parameters, "widthSegments", 1, 30, 1).name("Width Segments");
 
@@ -142,29 +142,6 @@ function addStar(){
 Array(200).fill().forEach(addStar);
 
 const clock = new THREE.Clock();
-
-let slideIndex = 0;
-const slides = document.querySelectorAll('.slide');
-const nextBtn = document.querySelector('.next');
-const prevBtn = document.querySelector('.prev');
-
-function showSlide(index) {
-    slides.forEach((slide, i) => {
-        slide.style.display = i === index ? 'block' : 'none';
-    });
-}
-
-nextBtn.addEventListener('click', () => {
-    slideIndex = (slideIndex + 1) % slides.length;
-    showSlide(slideIndex);
-});
-
-prevBtn.addEventListener('click', () => {
-    slideIndex = (slideIndex - 1 + slides.length) % slides.length;
-    showSlide(slideIndex);
-});
-
-showSlide(slideIndex); // Initial anzeigen
 
 function animate() {
     requestAnimationFrame(animate);
